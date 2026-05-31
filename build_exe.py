@@ -130,17 +130,6 @@ coll = COLLECT(
 def build():
     """Run PyInstaller build"""
     print("Building executable...")
-    
-    # Check for ffmpeg
-    ffmpeg_source = os.path.join(BIN_DIR, 'ffmpeg.exe')
-    if os.path.exists(ffmpeg_source):
-        # Ensure bin folder exists in dist
-        dist_bin = os.path.join(DIST_DIR, 'TFT-Video-Tool', 'bin')
-        os.makedirs(dist_bin, exist_ok=True)
-        shutil.copy(ffmpeg_source, os.path.join(dist_bin, 'ffmpeg.exe'))
-        print(f"Bundle ffmpeg.exe -> {dist_bin}")
-    
-    # Run PyInstaller
     cmd = [
         sys.executable, '-m', 'PyInstaller',
         '--name=TFT-Video-Tool',
@@ -148,8 +137,9 @@ def build():
         '--windowed',
         f'--distpath={DIST_DIR}',
         f'--workpath={BUILD_DIR}',
-        f'--add-binary={BIN_DIR}{os.sep}ffmpeg.exe;bin',
-        f'--add-data={SOURCE_DIR};source',
+        '--noconfirm',
+        '--add-binary=bin/ffmpeg.exe:bin',
+        f'--add-data={SOURCE_DIR}:source',
         '--hidden-import=PySide6',
         '--hidden-import=PySide6.QtCore',
         '--hidden-import=PySide6.QtGui',

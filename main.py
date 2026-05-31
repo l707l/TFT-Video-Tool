@@ -568,12 +568,15 @@ class VideoProcessorApp(QMainWindow):
         
         # Presets with CYD as first
         self.combo_presets = QComboBox()
-        base_config = {"fps": "30", "q": "10", "vcodec": "mjpeg", "acodec": "mp3", "ar": "44100", "suffix": "_mjpeg.avi"}
+        base_config = {"fps": "30", "q": "10", "vcodec": "mjpeg", "acodec": "mp3", "ar": "44100", "suffix": ".mjpeg"}
         def make_data(w, h):
             d = base_config.copy(); d.update({"w": w, "h": h}); return d
 
         # CYD (Cheap Yellow Display) - ESP32-2432S028 as FIRST preset
-        self.combo_presets.addItem("CYD (ESP32-2432S028) 240x320", make_data("240", "320"))
+        # Extension .mjpeg (NOT .avi) - folder /mjpeg on SD card
+        cyd_config = {"fps": "30", "q": "10", "vcodec": "mjpeg", "acodec": "mp3", "ar": "44100", "suffix": ".mjpeg", "w": "240", "h": "320"}
+        self.combo_presets.addItem("CYD (ESP32-2432S028) 240x320", cyd_config)
+        self.combo_presets.addItem("CYD (thelastoutpost) 240x320", cyd_config.copy())
         self.combo_presets.addItem("Landscape (320x170)", make_data("320", "170"))
         self.combo_presets.addItem("Landscape (280x240)", make_data("280", "240"))
         self.combo_presets.addItem("Portrait (170x320)", make_data("170", "320"))
@@ -721,8 +724,8 @@ class VideoProcessorApp(QMainWindow):
 
     def sync_suffix_with_codec(self):
         vcodec = self.combo_vcodec.currentText()
-        if vcodec == "mjpeg": self.txt_suffix.setText("_mjpeg.avi")
-        elif vcodec == "cinepak": self.txt_suffix.setText("_cinepak.avi")
+        if vcodec == "mjpeg": self.txt_suffix.setText(".mjpeg")
+        elif vcodec == "cinepak": self.txt_suffix.setText(".avi")
 
     def apply_preset(self):
         if self.updating_from_code: return
@@ -1030,10 +1033,10 @@ def parse_cli_args():
     parser.add_argument('--input', '-i', type=str, help='Input video file')
     parser.add_argument('--output', '-o', type=str, help='Output video file')
     parser.add_argument('--width', '-w', type=int, help='Output width')
-    parser.add_argument('--height', '-h', type=int, help='Output height')
+    parser.add_argument('--height', type=int, help='Output height')
     parser.add_argument('--fps', type=int, default=30, help='Frames per second (default: 30)')
-    parser.add_argument('--q', '-q', type=int, default=10, help='Quality 1-31 (default: 10)')
-    parser.add_argument('--preset', '-p', type=str, help='Preset name (e.g., "CYD (ESP32-2432S028) 240x320")')
+    parser.add_argument('--quality', '-q', type=int, default=10, help='Quality 1-31 (default: 10)')
+    parser.add_argument('--preset', type=str, help='Preset name')
     
     args = parser.parse_args()
     

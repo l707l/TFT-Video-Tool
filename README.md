@@ -52,24 +52,38 @@ The ESP32-2432S028 is a popular budget development board with built-in 2.8" TFT 
 | TFT_MOSI (SDA) | 23 |
 | TFT_SCLK (SCK) | 18 |
 | TFT_MISO | 19 |
-| SD_CS | 13 |
+| SD_CS | 5 |
 | BL (Backlight) | 21 |
 
 ### ESP32 Sketch Setup
 
-1. Install **TFT_eSPI** library via Arduino Library Manager
-2. Configure `User_Setup.h`:
-   ```c
-   #define TFT_CS   15
-   #define TFT_RST   4
-   #define TFT_DC    2
-   #define MOSI     23
-   #define SCK      18
-   #define MISO     19
-   ```
-3. Set SPI speed to 40-80MHz for video playback
-4. Use frame buffering or DMA for smooth playback
-5. Format SD card as FAT32
+This tool is designed to work with the [thelastoutpostworkshop/esp32-2432S028_video_player](https://github.com/thelastoutpostworkshop/esp32-2432S028_video_player) sketch.
+
+**Libraries to install (via Arduino Library Manager):**
+- **GFX Library for Arduino** (Arduino_GFX) by Moon On Our Nation
+- **JPEGDEC** by Bitbank2
+
+**Required settings:**
+- SPI Speed: 80MHz (or 40MHz if display is unstable)
+- Output format: `.mjpeg` (NOT `.avi`)
+- SD card folder: `/mjpeg` (create this folder on your SD card)
+- Files must have `.mjpeg` extension
+
+**SD Card Setup:**
+1. Format SD card as FAT32
+2. Create a folder named `mjpeg` (lowercase)
+3. Copy your `.mjpeg` files into the `/mjpeg` folder
+4. Insert SD card into CYD and power on
+
+**Recommended Settings for this player:**
+| Setting | Value |
+|---------|-------|
+| Resolution | 240x320 |
+| FPS | 30 |
+| Quality (Q) | 10 |
+| Codec | MJPEG |
+| Audio | MP3 (44100Hz) |
+| Output ext | `.mjpeg` |
 
 ## Installation
 
